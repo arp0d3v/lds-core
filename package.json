@@ -1,0 +1,46 @@
+{
+  "name": "@arp0d3v/lds-core",
+  "version": "2.0.0",
+  "description": "Framework-independent data source management for tables, lists, and grids",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "data-source",
+    "table",
+    "grid",
+    "pagination",
+    "sorting",
+    "filtering",
+    "typescript",
+    "framework-independent",
+    "event-emitter"
+  ],
+  "author": "Arash Pouya <arp0d3v>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arp0d3v/lds-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arp0d3v/lds-core/issues"
+  },
+  "homepage": "https://github.com/arp0d3v/lds-core#readme",
+  "peerDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.5.0",
+    "rimraf": "^3.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
+
