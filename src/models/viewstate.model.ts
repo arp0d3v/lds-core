@@ -23,8 +23,8 @@ export class LdsViewState {
         pageIndex: number,
         pageSize: number,
         totalItemCount: number,
-        public order1Name?: string | null,
-        public order1Dir?: string | null
+        public sort1Name?: string,
+        public sort1Dir?: string
     ) {
         // Initialize pagination state
         this.pagination = {
@@ -45,8 +45,8 @@ export class LdsViewState {
     }
     
     // Sorting
-    order2Name?: string | null;
-    order2Dir?: string | null;
+    sort2Name?: string;
+    sort2Dir?: string;
     
     // Pagination (nested config)
     pagination: LdsPaginationState;

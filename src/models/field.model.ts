@@ -6,17 +6,17 @@ export class LdsField {
         public title?: string,
         public dataType?: string,
         public visible?: boolean,
-        public orderable?: boolean,
-        public order1Name?: string,
-        public order1Dir?: string,
-        public order2Name?: string,
-        public order2Dir?: string,
+        public sortable?: boolean,
+        public sort1Name?: string,
+        public sort1Dir?: string,
+        public sort2Name?: string,
+        public sort2Dir?: string,
     ) {
         if (visible === undefined) {
             this.visible = true;
         }
-        if (order1Name === undefined) {
-            this.order1Name = name;
+        if (sort1Name === undefined) {
+            this.sort1Name = name;
         }
     }
 

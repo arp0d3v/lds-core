@@ -2,6 +2,7 @@ export interface LdsConfig {
     saveState?: boolean,
     storage: string,
     debugMode?: number,
+    useRouting?: boolean,
     sort: {
         defaultDir?: string,
         defaultName?: string,
@@ -27,6 +28,7 @@ export interface LdsConfig {
 export const defaultLdsConfig: LdsConfig = {
     debugMode: 0,
     storage: 'session',
+    useRouting: false,
     pagination: {
         enabled: false,
         pageSize: 10,
