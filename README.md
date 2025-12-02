@@ -17,6 +17,7 @@
 - ✅ **Pagination** - Built-in pagination support
 - ✅ **Sorting** - Single and multi-column sorting
 - ✅ **Filtering** - Flexible filter management
+- ✅ **Routing Support** - URL-based state management with query params
 - ✅ **State Caching** - Persist state in localStorage/sessionStorage
 - ✅ **Memory Safe** - Built-in dispose() pattern
 
@@ -80,6 +81,27 @@ dataSource.dispose();
 
 ---
 
+## ⚠️ Breaking Changes in v2.1.0
+
+If you're upgrading from v2.0.0 or earlier, note these breaking changes:
+
+- **Field Properties:** `orderable` → `sortable`
+- **State Properties:** `order1Name`/`order1Dir` → `sort1Name`/`sort1Dir`
+- **State Properties:** `order2Name`/`order2Dir` → `sort2Name`/`sort2Dir`
+
+**Migration:**
+```typescript
+// Old (v2.0.0)
+new LdsField('name', 'Name', 'string', true, true, 'order1Name', 'asc')
+dataSource.state.order1Name
+
+// New (v2.1.0)
+new LdsField('name', 'Name', 'string', true, true, 'sort1Name', 'asc')
+dataSource.state.sort1Name
+```
+
+---
+
 ## Core Concepts
 
 ### ListDataSource
@@ -104,7 +126,7 @@ new LdsField(
     'Display Title', // Column title
     'string',        // Data type
     true,            // Visible (default: true)
-    true             // Orderable (default: true)
+    true             // Sortable (default: true)
 );
 ```
 
@@ -126,7 +148,52 @@ dataSource.onSortChanged.subscribe(fieldName => {
 dataSource.onPaginationChanged.subscribe(state => {
     // Page or page size changed
 });
+
+dataSource.onNavigateRequested.subscribe(eventName => {
+    // Navigation requested (when useRouting is enabled)
+});
 ```
+
+---
+
+## Routing Support
+
+Enable URL-based state management for better user experience and shareable links:
+
+```typescript
+const dataSource = new ListDataSource('myList', 'remote', {
+    useRouting: true,  // Enable routing
+    pagination: {
+        enabled: true,
+        pageSize: 20
+    },
+    sort: {
+        defaultDir: 'desc'
+    }
+});
+
+// Get query parameters for current state
+const queryParams = dataSource.getQueryParams();
+// Returns: { pageIndex: 0, pageSize: 20, sort1Name: 'name', sort1Dir: 'desc', ...filters }
+
+// Apply query parameters from URL
+dataSource.applyQueryParams({
+    pageIndex: '2',
+    pageSize: '50',
+    sort1Name: 'email',
+    sort1Dir: 'asc',
+    searchText: 'john'
+});
+
+// Listen for navigation requests
+dataSource.onNavigateRequested.subscribe(eventName => {
+    const params = dataSource.getQueryParams();
+    // Navigate using your routing library
+    router.navigate([], { queryParams: params });
+});
+```
+
+**Note:** Routing integration is framework-specific. See `@arp0d3v/lds-angular` for Angular Router integration.
 
 ---
 
@@ -142,6 +209,8 @@ dataSource.onPaginationChanged.subscribe(state => {
 - `loadNextPage()` - Load next page
 - `reload()` - Reload data
 - `field(name: string)` - Get field by name
+- `getQueryParams(includePagination?: boolean)` - Get query params for routing
+- `applyQueryParams(params: any, customFieldTypes?: object)` - Apply query params
 - `dispose()` - Cleanup resources
 
 ### Properties
@@ -196,7 +265,7 @@ npm install @arp0d3v/lds-core @arp0d3v/lds-vue
 ### Vanilla JS
 
 ```html
-<script src="https://unpkg.com/@arp0d3v/lds-core@2.0.0/dist/index.js"></script>
+<script src="https://unpkg.com/@arp0d3v/lds-core@2.1.0/dist/index.js"></script>
 <script>
   const { ListDataSource, LdsField } = LdsCore;
   const ds = new ListDataSource('myList', 'local', {});
