@@ -92,8 +92,8 @@ If you're upgrading from v2.0.0 or earlier, note these breaking changes:
 **Migration:**
 ```typescript
 // Old (v2.0.0)
-new LdsField('name', 'Name', 'string', true, true, 'order1Name', 'asc')
-dataSource.state.order1Name
+new LdsField('name', 'Name', 'string', true, true, 'sort1Name', 'asc')
+dataSource.state.sort1Name
 
 // New (v2.1.0)
 new LdsField('name', 'Name', 'string', true, true, 'sort1Name', 'asc')
