@@ -153,6 +153,10 @@ export class ListDataSource<T> {
         if (this._checkDisposed('setSourceItems')) { return; }
 
         if (!items) { items = []; }
+        if (items !== this._sourceItems) {
+            this.appliedSortName = undefined;
+            this._stampOriginalOrder(items);
+        }
         this._sourceItems = items;
         this.state.totalItemCount = items.length;
         this.updatePaginationState();
@@ -183,8 +187,55 @@ export class ListDataSource<T> {
         } else {
             state.sort1Name = fieldName;
             state.sort1Dir = direction || this.config.sort.defaultDir;
+            if (state.sort2Name == fieldName) {
+                state.sort2Name = undefined;
+                state.sort2Dir = undefined;
+            }
         }
         this.onSortChanged.emit(fieldName);
+    }
+    setSort2(fieldName: string, direction?: string): void {
+        if (this._checkDisposed('setSort2') || !fieldName) { return; }
+        const state = this.state;
+        if (!state.sort1Name || state.sort1Name === fieldName) {
+            this.changeSort(fieldName, direction);
+            return;
+        }
+        state.sort2Name = fieldName;
+        state.sort2Dir = direction || this.config.sort.defaultDir;
+        this.onSortChanged.emit(fieldName);
+    }
+    toggleSortLevel(level: 1 | 2): void {
+        if (this._checkDisposed('toggleSortLevel')) { return; }
+        const state = this.state;
+        if (level === 1) {
+            if (!state.sort1Name) { return; }
+            state.sort1Dir = this._toggleSortDir(state.sort1Dir);
+            this.onSortChanged.emit(state.sort1Name);
+            return;
+        }
+        if (!state.sort2Name) { return; }
+        state.sort2Dir = this._toggleSortDir(state.sort2Dir);
+        this.onSortChanged.emit(state.sort2Name);
+    }
+    removeSort(level: 1 | 2): void {
+        if (this._checkDisposed('removeSort')) { return; }
+        const state = this.state;
+        if (level === 1) {
+            if (state.sort2Name) {
+                state.sort1Name = state.sort2Name;
+                state.sort1Dir = state.sort2Dir || this.config.sort.defaultDir;
+                state.sort2Name = undefined;
+                state.sort2Dir = undefined;
+            } else {
+                state.sort1Name = undefined;
+                state.sort1Dir = undefined;
+            }
+        } else {
+            state.sort2Name = undefined;
+            state.sort2Dir = undefined;
+        }
+        this.onSortChanged.emit(state.sort1Name);
     }
     /**
      * Sets the page size (items per page)
@@ -513,6 +564,18 @@ export class ListDataSource<T> {
         if (dir == 'asc') { return 'desc'; }
         if (dir == 'desc') { return 'asc'; }
         return 'desc';
+    }
+    private _stampOriginalOrder(items: T[]): void {
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i] as any;
+            if (!item || typeof item !== 'object' || !Object.isExtensible(item)) { continue; }
+            Object.defineProperty(item, '_ldsOriginalIndex', {
+                value: i,
+                writable: true,
+                configurable: true,
+                enumerable: false
+            });
+        }
     }
     clearState() {
         this.state.sort1Dir = undefined;

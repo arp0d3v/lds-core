@@ -9,7 +9,8 @@ export interface LdsConfig {
         classNameDefault?: string,
         classNameDesc?: string,
         classNameAsc?: string,
-        icon?: string
+        icon?: string,
+        showRank?: boolean
     },
     pagination: {
         enabled?: boolean,
